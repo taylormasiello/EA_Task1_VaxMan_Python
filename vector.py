@@ -1,32 +1,32 @@
 import math
 
 class Vector2(object): # vector class
-    def _init_(self, x=0, y=0):
+    def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
         self.thresh =0.000001
 
-    def _add_(self, other): # arithmetic methods 
+    def __add__(self, other): # arithmetic methods 
         return Vector2(self.x + other.x, self.y + other.y)
     
-    def _sub_(self, other):
+    def __sub__(self, other):
         return Vector2(self.x - other.x, self.y - other.y)
 
-    def _neg_(self):
+    def __neg__(self):
         return Vector2(-self.x, -self.y)
 
-    def _mul_(self, scalar):
+    def __mul__(self, scalar):
         return Vector2(self.x * scalar, self.y * scalar)
 
-    def _div_(self, scalar):
+    def __div__(self, scalar):
         if scalar != 0:
             return Vector2(self.x / float(scalar), self.y / float(scalar))
         return None
     
-    def _truediv_(self, scalar):
-        return self._div_(scalar)
+    def __truediv__(self, scalar):
+        return self.__div__(scalar)
 
-    def _eq_(self, other): # equality check between 2 vectors, using threshold value
+    def __eq__(self, other): # equality check between 2 vectors, using threshold value
         if abs(self.x - other.x) < self.thresh:
             if abs(self.y - other.y) < self.thresh:
                 return True
@@ -47,5 +47,5 @@ class Vector2(object): # vector class
     def asInt(self): # converts vetor to int tuple
         return int(self.x), int(self.y)
 
-    def _str_(self): # print out vector 
+    def __str__(self): # print out vector 
         return "<"+str(self.x)+", "+str(self.y)+">"

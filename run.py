@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from constants import *
+from pacman import Pacman
 class GameController(object):
     def __init__(self):
         pygame.init() 
@@ -14,9 +15,11 @@ class GameController(object):
 
     def startGame(self):
         self.setBackground()
+        self.pacman = Pacman()
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate() Unity methods
+        self.pacman.update(dt)
         self.checkEvents()
         self.render()
 
@@ -26,6 +29,8 @@ class GameController(object):
                 exit()                
 
     def render(self): 
+        self.screen.blit(self.background, (0, 0)) # redraws background/erases all objects and redraws them at new positions
+        self.pacman.render(self.screen)
         pygame.display.update()
 
 if __name__ == "__main__":
