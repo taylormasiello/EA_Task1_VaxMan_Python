@@ -1,12 +1,14 @@
-# main file, entry point
 import pygame
 from pygame.locals import *
 from constants import *
 
+pygame.init() # debug fix 1
+screen = pygame.display.set_mode(SCREENSIZE, 0, 32) # debug fix 1
+
 class GameController(object):
-    def _int_(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode(SCREENSIZE, 0, 32)
+    def _init_(self):
+        # pygame.init() -bug 1
+        # self.screen = pygame.display.set_mode(SCREENSIZE, 0, 32) -bug 1
         self.background = None
 
     def setBackground(self): # sets up background
@@ -23,12 +25,10 @@ class GameController(object):
     def checkEvents(self): 
         for event in pygame.event.get():
             if event.type == QUIT:
-                exit()
+                exit()                
 
     def render(self): 
         pygame.display.update()
-
-
 
 if __name__ == "__main__":
     game = GameController()
