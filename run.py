@@ -1,15 +1,12 @@
 import pygame
 from pygame.locals import *
 from constants import *
-
-pygame.init() # debug fix 1
-screen = pygame.display.set_mode(SCREENSIZE, 0, 32) # debug fix 1
-
 class GameController(object):
-    def _init_(self):
-        # pygame.init() -bug 1
-        # self.screen = pygame.display.set_mode(SCREENSIZE, 0, 32) -bug 1
+    def __init__(self):
+        pygame.init() 
+        self.screen = pygame.display.set_mode(SCREENSIZE, 0, 32) 
         self.background = None
+        self.clock = pygame.time.Clock()
 
     def setBackground(self): # sets up background
         self.background = pygame.surface.Surface(SCREENSIZE).convert()
@@ -19,6 +16,7 @@ class GameController(object):
         self.setBackground()
 
     def update(self): # called once per frame, game loop
+        dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate() Unity methods
         self.checkEvents()
         self.render()
 
