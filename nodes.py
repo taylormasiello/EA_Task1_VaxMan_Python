@@ -7,7 +7,7 @@ from constants import *
 class Node(object):
     def __init__(self, x, y):
         self.position = Vector2(x, y)
-        self.neighbors = {UP:None, DOWN:None, LEFT:None, RIGHT:None} # node neighbors set up as dictionary
+        self.neighbors = {UP:None, DOWN:None, LEFT:None, RIGHT:None, PORTAL: None} # node neighbors set up as dictionary
 
     def render(self, screen):
         for n in self.neighbors.keys():
@@ -87,6 +87,13 @@ class NodeGroup(object):
         if (x, y) in self.nodesLUT.key():
             return self.nodesLUT[(x, y)]
         return None
+
+    def setPortalPair(self, pair1, pair2): # takes 2 tuple values, checks to see if both in nodesLUT; if yes, connected as portals
+        key1 = self.constructKey(*pair1)
+        key2 = self.constructKey(*pair2)
+        if key1 in self.nodesLUT.keys() and key2 in self.nodesLUT.keys():
+            self.nodesLUT[key1].neighbors[PORTAL] = self.nodesLUT[key2]
+            self.nodesLUT[key2].neighbors[PORTAL] = self.nodesLUT[key1]
 
     def getStartTempNode(self): # temp method to start pacman on first node in LUT
         nodes = list(self.nodesLUT.values())

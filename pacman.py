@@ -28,7 +28,9 @@ class Pacman(object):
         # self.node = self.getNewTarget(direction)
         # self.setPosition()
         if self.overshotTarget(): # corrects if pacman overshoots node; if target node valid, move in that direction; if not, stop on that node
-            self.node = self.target 
+            self.node = self.target
+            if self.node.neighbors[PORTAL] is not None: # check if node is portal, if true pacman will "jump" between
+                self.node = self.node.neighbors[PORTAL]
             self.target = self.getNewTarget(direction)
             if self.target is not self.node:
                 self.direction = direction
