@@ -3,6 +3,7 @@ from pygame.locals import *
 from constants import *
 from pacman import Pacman
 from nodes import NodeGroup
+
 class GameController(object):
     def __init__(self):
         pygame.init() 
@@ -16,9 +17,10 @@ class GameController(object):
 
     def startGame(self):
         self.setBackground()
-        self.nodes = NodeGroup()
-        self.nodes.setupTestNodes()
-        self.pacman = Pacman(self.nodes.nodeList[0]) # starts pacman on first node in nodeList
+        self.nodes = NodeGroup("mazetest.txt")
+        # self.nodes.setupTestNodes()
+        # self.pacman = Pacman(self.nodes.nodeList[0]) # starts pacman on first node in nodeList
+        self.pacman = Pacman(self.nodes.getStartTempNode())
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity methods
