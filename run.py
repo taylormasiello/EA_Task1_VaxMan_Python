@@ -18,7 +18,7 @@ class GameController(object):
         self.setBackground()
         self.nodes = NodeGroup()
         self.nodes.setupTestNodes()
-        self.pacman = Pacman()
+        self.pacman = Pacman(self.nodes.nodeList[0]) # starts pacman on first node in nodeList
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity methods
