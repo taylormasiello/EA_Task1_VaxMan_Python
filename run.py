@@ -17,7 +17,7 @@ class GameController(object):
 
     def startGame(self):
         self.setBackground()
-        self.nodes = NodeGroup("mazetest.txt")
+        self.nodes = NodeGroup("maze1.txt")
         # self.nodes.setupTestNodes()
         # self.pacman = Pacman(self.nodes.nodeList[0]) # starts pacman on first node in nodeList
         self.pacman = Pacman(self.nodes.getStartTempNode())
