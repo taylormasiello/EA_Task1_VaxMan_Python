@@ -27,14 +27,22 @@ class Pacman(object):
         # self.direction = direction
         # self.node = self.getNewTarget(direction)
         # self.setPosition()
-        if self.overshotTarget(): # corrects if pacman overshoots node
+        if self.overshotTarget(): # corrects if pacman overshoots node; if target node valid, move in that direction; if not, stop on that node
             self.node = self.target 
             self.target = self.getNewTarget(direction)
             if self.target is not self.node:
                 self.direction = direction
+            # else:
+            #     self.dirtion = STOP
+            # self.setPosition()
             else:
-                self.dirtion = STOP
+                self.target = self.getNewTarget(self.direction)
+            if self.target is self.node: 
+                self.direction = STOP
             self.setPosition()
+        else: # if not overshooting a node, traveling between nodes, so can reverse direction
+            if self.oppositeDirection(direction):
+                self.reverseDirection()
     
     def validDirection(self, direction): # checks if key pressed is a valid direction, if it has a node in that direction
         if direction is not STOP:
@@ -71,3 +79,15 @@ class Pacman(object):
             node2Self = vec2.magnitudeSquared()
             return node2Self >= node2Target
         return False
+
+    def reverseDirection(self): # swaps values to opposite based on constants as flipped values
+        self.direction *= -1
+        temp = self.node
+        self.node = self.target
+        self.target = temp
+    
+    def oppositeDirection(self, direction): # validates checks input direction is opposite of current direction; only these moves available between nodes
+        if direction is not STOP:
+            if direction == self.direction * -1:
+                return True
+            return False
