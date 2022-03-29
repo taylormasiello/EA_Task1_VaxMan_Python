@@ -16,16 +16,25 @@ class Pacman(object):
         self.color = YELLOW
         self.node = node
         self.setPosition()
+        self.target = node # node pacman is moving toward
 
     def setPosition(self):
         self.position = self.node.position.copy()
     
     def update(self, dt):
-        # self.position += self.directions[self.direction]*self.speed*dt
+        self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()
-        self.direction = direction
-        self.node = self.getNewTarget(direction)
-        self.setPosition()
+        # self.direction = direction
+        # self.node = self.getNewTarget(direction)
+        # self.setPosition()
+        if self.overshotTarget(): # corrects if pacman overshoots node
+            self.node = self.target 
+            self.target = self.getNewTarget(direction)
+            if self.target is not self.node:
+                self.direction = direction
+            else:
+                self.dirtion = STOP
+            self.setPosition()
     
     def validDirection(self, direction): # checks if key pressed is a valid direction, if it has a node in that direction
         if direction is not STOP:
@@ -53,3 +62,12 @@ class Pacman(object):
     def render(self, screen): # pygame needs circle drawn in integers
         p = self.position.asInt()
         pygame.draw.circle(screen, self.color, p, self.radius)
+
+    def overshotTarget(self): # checks if pacman overshot taget node; if pacmand distance >= distance between nodes, he overshot
+        if self.target is not None:
+            vec1 = self.target.position - self.node.position
+            vec2 = self.position - self.node.position
+            node2Target = vec1.magnitudeSquared() # use magnitudeSquared to compare 2 distances to avoid taking square root
+            node2Self = vec2.magnitudeSquared()
+            return node2Self >= node2Target
+        return False
