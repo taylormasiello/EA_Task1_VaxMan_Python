@@ -32,11 +32,11 @@ class Vector2(object): # vector class
                 return True
             return False
 
-    def magnitudSquared(self): # more optmizied for comparision of length between 2 vectors
+    def magnitudeSquared(self): # more optmizied for comparision of length between 2 vectors
         return self.x**2 + self.y**2
 
     def magnitude(self): # returns actual length of vector
-        return math.sqrt(self.magnitudSquared())
+        return math.sqrt(self.magnitudeSquared())
 
     def copy(self): # copy method to create new instance of a vector
         return Vector2(self.x, self.y)
