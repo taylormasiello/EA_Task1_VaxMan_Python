@@ -3,6 +3,7 @@ import pygame
 from vector import Vector2
 from constants import *
 
+# creates connected graph data structure as a node map
 class Node(object):
     def __init__(self, x, y):
         self.position = Vector2(x, y)
