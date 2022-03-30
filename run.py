@@ -26,9 +26,10 @@ class GameController(object):
         self.pellets = PelletGroup("maze1.txt") # creates PelletGroup object, passes in maze1 txtFile
 
     def update(self): # called once per frame, game loop
-        dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity methods
+        dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity method names
         self.pacman.update(dt)
         self.pellets.update(dt)
+        self.checkPelletEvents()
         self.checkEvents()
         self.render()
 
@@ -42,7 +43,13 @@ class GameController(object):
         self.nodes.render(self.screen) # placing before pacman so pellets appear in front of nodes when rendered
         self.pellets.render(self.screen) # drawn before pacman so pacman in front of pellets
         self.pacman.render(self.screen)
-        pygame.display.update()
+        pygame.display.update() 
+
+    def checkPelletEvents(self):
+        pellet = self.pacman.eatPellets(self.pellets.pelletList) # sends pelletList to pacman; returns pellet he's colliding with, if any
+        if pellet: # if pellet not None
+            self.pellets.numEaten += 1
+            self.pellets.pelletList.remove(pellet)
 
 if __name__ == "__main__":
     game = GameController()

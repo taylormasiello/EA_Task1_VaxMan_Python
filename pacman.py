@@ -4,6 +4,7 @@ from pygame.locals import *
 from vector import Vector2
 from constants import *
 from nodes import *
+# from pellets import *
 
 class Pacman(object):
     def __init__(self, node):
@@ -17,6 +18,7 @@ class Pacman(object):
         self.node = node
         self.setPosition()
         self.target = node # node pacman is moving toward
+        self.collideRadius = 5 # smaller than pacman so doesn't disappear as soon as pellet touched
 
     def setPosition(self):
         self.position = self.node.position.copy()
@@ -92,4 +94,15 @@ class Pacman(object):
         if direction is not STOP:
             if direction == self.direction * -1:
                 return True
-            return False
+            return False 
+
+    def eatPellets(self, pelletList):
+        for pellet in pelletList: # loops through pelletList, if pacman collides w/ pellet, returns pellet
+            d = self.position - pellet.position
+            dSquared = d.magnitudeSquared()
+            rSquared = (pellet.radius+self.collideRadius)**2
+            if dSquared <= rSquared:
+                return pellet
+        return None
+    
+
