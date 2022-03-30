@@ -19,7 +19,7 @@ class Pellet(object):
             pygame.draw.circle(screen, self.color, p, self.radius)
 
 class PowerPellet(Pellet): # THIS WILL BE POWERPELLET IMPLEMENTATION FOR VAX-MAN VARIANTION
-    def __int__(self, row, column):
+    def __init__(self, row, column):
         Pellet.__init__(self, row, column)
         self.name = POWERPELLET
         self.radius = int(8 * TILEWIDTH / 16)
