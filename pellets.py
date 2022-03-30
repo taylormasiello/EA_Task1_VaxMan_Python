@@ -18,7 +18,7 @@ class Pellet(object):
             p = self.position.asInt()
             pygame.draw.circle(screen, self.color, p, self.radius)
 
-class PowerPellet(Pellet): # THIS WILL BE POWERPELLET IMPLEMENTATION FOR VAX-MAN VARIANTION
+class PowerPellet(Pellet):
     def __init__(self, row, column):
         Pellet.__init__(self, row, column)
         self.name = POWERPELLET
