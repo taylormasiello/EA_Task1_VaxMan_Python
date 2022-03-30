@@ -21,8 +21,8 @@ class NodeGroup(object):
     def __init__(self, level): # brings in txtFile as level data input
         self.level = level
         self.nodesLUT = {} # dictionary containing nodes, easier to look up nodes; LUT means "Look Up Table"
-        self.nodeSymbols = ['+']
-        self.pathSymbols = ['.']
+        self.nodeSymbols = ['+', 'P', 'n']
+        self.pathSymbols = ['.', '-', '|', 'p']
         data = self.readMazeFile(level)
         self.createNodeTable(data)
         self.connectHorizontally(data)
