@@ -23,12 +23,12 @@ class Entity(object):
     
     def setPosition(self):
         self.position = self.node.position.copy()
-
+          
     def validDirection(self, direction):
         if direction is not STOP:
             if self.node.neighbors[direction] is not None:
                 return True
-            return False
+        return False
 
     def getNewTarget(self, direction):
         if self.validDirection(direction):
@@ -49,12 +49,12 @@ class Entity(object):
         temp = self.node
         self.node = self.target
         self.target = temp
-
+        
     def oppositeDirection(self, direction):
         if direction is not STOP:
             if direction == self.direction * -1:
                 return True
-            return False
+        return False
 
     def setSpeed(self, speed):
         self.speed = speed * TILEWIDTH / 16 # keeps moveSpeed of obj constant dispite changes in tilemap size
@@ -64,13 +64,13 @@ class Entity(object):
             p = self.position.asInt()
             pygame.draw.circle(screen, self.color, p, self.radius)
 
-    def update(self, dt): # will choose a random, valid direction to go from node (pacman's update overrides this method)
+    def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt
-
+         
         if self.overshotTarget():
             self.node = self.target
-            directions = self.validDirection()
-            direction = self.randomDirection(directions)
+            directions = self.validDirections()
+            direction = self.randomDirection(directions)   
             if not self.disablePortal:
                 if self.node.neighbors[PORTAL] is not None:
                     self.node = self.node.neighbors[PORTAL]
@@ -79,18 +79,18 @@ class Entity(object):
                 self.direction = direction
             else:
                 self.target = self.getNewTarget(self.direction)
-                
+
             self.setPosition()
 
-    def validDirections(self): # gets list of validDirections by checkin if node connects to another in same direction, not the same one;
+    def validDirections(self):
         directions = []
         for key in [UP, DOWN, LEFT, RIGHT]:
             if self.validDirection(key):
                 if key != self.direction * -1:
                     directions.append(key)
-                if len(directions) == 0: # if list is empty, only possible direction is reversed
-                    directions.append(self.direction * -1)
-                return directions
+        if len(directions) == 0:
+            directions.append(self.direction * -1)
+        return directions
 
     def randomDirection(self, directions):
-        return directions[randint(0, len(directions) - 1)]
+        return directions[randint(0, len(directions)-1)]
