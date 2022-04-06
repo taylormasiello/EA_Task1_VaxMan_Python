@@ -25,7 +25,7 @@ class GameController(object):
         # self.pacman = Pacman(self.nodes.nodeList[0])
         self.pacman = Pacman(self.nodes.getStartTempNode())
         self.pellets = PelletGroup("maze1.txt") # creates PelletGroup object, passes in maze1 txtFile
-        self.ghost = Ghost(self.nodes.getStartTempNode()) # temp, starts ghost on same node as pacman
+        self.ghost = Ghost(self.nodes.getStartTempNode(), self.pacman) 
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity method names
