@@ -48,17 +48,6 @@ class Pacman(Entity):
         else: # if not overshooting a node, traveling between nodes, so can reverse direction
             if self.oppositeDirection(direction):
                 self.reverseDirection()
-    
-    # def validDirection(self, direction): # checks if key pressed is a valid direction, if it has a node in that direction
-    #     if direction is not STOP:
-    #         if self.node.neighbors[direction] is not None:
-    #             return True
-    #         return False
-
-    # def getNewTarget(self, direction): # moves pacman if key press is valid
-    #     if self.validDirection(direction):
-    #         return self.node.neighbors[direction]
-    #     return self.node
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -71,6 +60,38 @@ class Pacman(Entity):
         if key_pressed[K_RIGHT]:
             return RIGHT
         return STOP
+
+    def eatPellets(self, pelletList):
+        for pellet in pelletList: # loops through pelletList, if pacman collides w/ pellet, returns pellet
+            if self.collideCheck(pellet):
+            # d = self.position - pellet.position
+            # dSquared = d.magnitudeSquared()
+            # rSquared = (pellet.radius+self.collideRadius)**2
+            # if dSquared <= rSquared:
+                return pellet
+        return None
+
+    def collideGhost(self, ghost):
+        return self.collideCheck(ghost)
+    
+    def collideCheck(self, other): # checks collision with some entity
+        d = self.position - other.position
+        dSquared = d.magnitudeSquared()
+        rSquared = (self.collideRadius + other.collideRadius)**2
+        if dSquared <= rSquared:
+            return True
+        return False
+
+    # def validDirection(self, direction): # checks if key pressed is a valid direction, if it has a node in that direction
+    #     if direction is not STOP:
+    #         if self.node.neighbors[direction] is not None:
+    #             return True
+    #         return False
+
+    # def getNewTarget(self, direction): # moves pacman if key press is valid
+    #     if self.validDirection(direction):
+    #         return self.node.neighbors[direction]
+    #     return self.node
 
     # def render(self, screen): # pygame needs circle drawn in integers
     #     p = self.position.asInt()
@@ -96,14 +117,5 @@ class Pacman(Entity):
     #         if direction == self.direction * -1:
     #             return True
     #         return False 
-
-    def eatPellets(self, pelletList):
-        for pellet in pelletList: # loops through pelletList, if pacman collides w/ pellet, returns pellet
-            d = self.position - pellet.position
-            dSquared = d.magnitudeSquared()
-            rSquared = (pellet.radius+self.collideRadius)**2
-            if dSquared <= rSquared:
-                return pellet
-        return None
     
 

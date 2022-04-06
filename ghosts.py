@@ -39,3 +39,16 @@ class Ghost(Entity):
         self.setSpeed(100) 
         self.directionMethod = self.goalDirection
 
+    def spawn(self):
+        self.goal = self.spawnNode.position
+        
+    def setSpawnNode(self, node):
+        self.spawnNode = node
+
+    def startSpawn(self):
+        self.mode.setSpawnMode()
+        if self.mode.current == SPAWN:
+            self.setSpeed(150)
+            self.directionMethod = self.goalDirection
+            self.spawn()
+

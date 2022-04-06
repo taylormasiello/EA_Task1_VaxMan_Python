@@ -85,7 +85,7 @@ class NodeGroup(object):
     
     def getNodeFromeTiles(self, col, row):
         x, y = self.constructKey(col, row)
-        if (x, y) in self.nodesLUT.key():
+        if (x, y) in self.nodesLUT.keys():
             return self.nodesLUT[(x, y)]
         return None
 
