@@ -1,4 +1,5 @@
 from constants import *
+from ghosts import *
 
 class MainMode(object):
     def __init__(self):
@@ -33,4 +34,19 @@ class ModeController(object): # to know which mode the entity should be in
 
     def update(self, dt):
         self.mainmode.update(dt)
-        self.current = self.mainmode.mode
+        if self.current is FREIGHT:
+            self.timer += dt
+            if self.timer >= self.time:
+                self.time = None
+                self.entity.normalMode()
+                self.current = self.mainmode.mode
+        elif self.current in [SCATTER, CHASE]:
+            self.current = self.mainmode.mode
+
+    def setFreightMode(self):
+        if self.current in [SCATTER, CHASE]:
+            self.timer = 0
+            self.time = 7
+            self.current = FREIGHT
+        elif self.current is FREIGHT:
+            self.timer = 0

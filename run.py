@@ -1,3 +1,4 @@
+from turtle import home
 import pygame
 from pygame.locals import *
 from constants import *
@@ -21,8 +22,9 @@ class GameController(object):
         self.setBackground()
         self.nodes = NodeGroup("maze1.txt")
         self.nodes.setPortalPair((0, 17), (27, 17)) # temp hard coded portal neighbors
-        # self.nodes.setupTestNodes()
-        # self.pacman = Pacman(self.nodes.nodeList[0])
+        homekey = self.nodes.createHomeNodes(11.5, 14) # temp hard coded based on maze1 txtFile
+        self.nodes.connectHomeNodes(homekey, (12, 14), LEFT) # temp hard coded homeNodes left/right pos
+        self.nodes.connectHomeNodes(homekey, (15,14), RIGHT)
         self.pacman = Pacman(self.nodes.getStartTempNode())
         self.pellets = PelletGroup("maze1.txt") # creates PelletGroup object, passes in maze1 txtFile
         self.ghost = Ghost(self.nodes.getStartTempNode(), self.pacman) 
@@ -54,6 +56,8 @@ class GameController(object):
         if pellet: # if pellet not None
             self.pellets.numEaten += 1
             self.pellets.pelletList.remove(pellet)
+            if pellet.name == POWERPELLET:
+                self.ghost.startFreight()
 
 if __name__ == "__main__":
     game = GameController()

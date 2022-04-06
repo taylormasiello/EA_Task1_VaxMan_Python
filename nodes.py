@@ -1,5 +1,5 @@
 import pygame
-import numpy as np
+import numpy as np # type: ignore ; supressiong of incorrect warning
 from vector import Vector2
 from constants import *
 
@@ -27,6 +27,7 @@ class NodeGroup(object):
         self.createNodeTable(data)
         self.connectHorizontally(data)
         self.connectVertically(data)
+        self.homekey = None
 
     def render(self, screen): # loops through nodeList and calls nodes render method
         # for node in self.nodeList:
@@ -87,6 +88,24 @@ class NodeGroup(object):
         if (x, y) in self.nodesLUT.key():
             return self.nodesLUT[(x, y)]
         return None
+
+    def createHomeNodes(self, xoffset, yoffset):
+        homedata = np.array([['X','X','+','X','X'],
+                             ['X','X','.','X','X'],
+                             ['+','X','.','X','+'],
+                             ['+','.','+','.','+'],
+                             ['+','X','X','X','+']])
+        
+        self.createNodeTable(homedata, xoffset, yoffset)
+        self.connectHorizontally(homedata, xoffset, yoffset)
+        self.connectVertically(homedata, xoffset, yoffset)
+        self.homekey = self.constructKey(xoffset+2, yoffset)
+        return self.homekey # key to top node of homedata
+
+    def connectHomeNodes(self, homekey, otherkey, direction): # connects topmost node to specified node
+        key = self.constructKey(*otherkey)
+        self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key] # allows embedded homeNodes to be interactable...
+        self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey] # ...in both directions
 
     def setPortalPair(self, pair1, pair2): # takes 2 tuple values, checks to see if both in nodesLUT; if yes, connected as portals
         key1 = self.constructKey(*pair1)
