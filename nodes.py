@@ -1,5 +1,5 @@
 import pygame
-import numpy as np # type: ignore ; supressiong of incorrect warning
+import numpy as np
 from vector import Vector2
 from constants import *
 
