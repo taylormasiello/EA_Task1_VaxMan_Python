@@ -1,6 +1,13 @@
 # EA Virtual Assignment 1: Vax-Man in Python
 ## Electronic Arts Software Engineering Virtual Experience Program
-### Task 1: Create a modified Pac-Man game, called Vax-Man, in Python using Pygame
+
+The original task is to MODIFY an existing PacMan game made in Python. As it's my first exposure to Python, I decided to extend this task into a full project. I'm BUILDING the PacMan game in Pygame using Python from the ground up. Once completed, I'll then modify it into VaxMan per the EA program's task. 
+
+_____
+
+
+### Task 1: Create a modified Pac-Man game, called Vax-Man, in Python using Pygame 
+(https://www.theforage.com/virtual-internships/x4KPrqxMDS4a5isKe?ref=DDnsXYoZ4bsZgnYoA)
 
 Pac-Man is one of the world's oldest computer games. In this task, we are going to pay tribute to Pac-Man. We are building a new game called Vax-Man. The rules are similar to Pac-Man with several notable exceptions:
 
