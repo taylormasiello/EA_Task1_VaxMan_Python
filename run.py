@@ -28,12 +28,14 @@ class GameController(object):
         self.pacman = Pacman(self.nodes.getStartTempNode())
         self.pellets = PelletGroup("maze1.txt") # creates PelletGroup object, passes in maze1 txtFile
         self.ghost = Ghost(self.nodes.getStartTempNode(), self.pacman) 
-        self.ghost.setSpawnNode(self.nodes.getNodeFromeTiles(2+11.5, 3+14))
+        # self.ghost.setSpawnNode(self.nodes.getNodeFromeTiles(2+11.5, 3+14))
+        self.ghosts.setSpawnNode(self.nodes.getNodeFromeTiles(2+11.5, 3+14)) # creates ghosts (list) object vs. just a ghost object
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity method names
         self.pacman.update(dt)
-        self.ghost.update(dt)
+        # self.ghost.update(dt)
+        self.ghosts.update(dt)
         self.pellets.update(dt)
         self.checkPelletEvents()
         self.checkGhostEvents()
@@ -50,7 +52,8 @@ class GameController(object):
         self.nodes.render(self.screen) # placing before pacman so pellets appear in front of nodes when rendered
         self.pellets.render(self.screen) # drawn before pacman so pacman in front of pellets
         self.pacman.render(self.screen)
-        self.ghost.render(self.screen)
+        # self.ghost.render(self.screen)
+        self.ghosts.render(self.screen)
         pygame.display.update() 
 
     def checkPelletEvents(self):
@@ -59,12 +62,17 @@ class GameController(object):
             self.pellets.numEaten += 1
             self.pellets.pelletList.remove(pellet)
             if pellet.name == POWERPELLET:
-                self.ghost.startFreight()
+                # self.ghost.startFreight()
+                self.ghosts.startFreight()
 
-    def checkGhostEvents(self):
-        if self.pacman.collideGhost(self.ghost):
-            if self.ghost.mode.current is FREIGHT:
-                self.ghost.startSpawn()
+    def checkGhostEvents(self): # returns which ghost from ghosts list pacman is colliding with vs bool if colliding; will return None if not colliding
+        for ghost in self.ghosts:
+            if self.pacman.collideGhost(ghost):
+                if ghost.mode.current is FREIGHT:
+                    ghost.startSpawn()
+        # if self.pacman.collideGhost(self.ghost):
+        #     if self.ghost.mode.current is FREIGHT:
+        #         self.ghost.startSpawn()
 
 if __name__ == "__main__":
     game = GameController()
