@@ -79,7 +79,7 @@ class Inky(Ghost):
         self.color = TEAL
     
     def scatter(self): # SCATTER target as bottom right corner 
-        self.goal = Vector2(TILEWIDTH*NCOLS, TILEHEIGHT*NROWS)
+        self.goal = Vector2(TILEWIDTH*NCOLS, TILEHEIGHT*NROWS) 
 
     def chase(self): # CHASE target == ((((2 tiles in front of Pacman's position) - (Blinky's position)) * 2) + (Blinky's position))
         vec1 = self.pacman.position + self.pacman.directions[self.pacman.direction] * TILEWIDTH * 2
@@ -97,7 +97,7 @@ class Clyde(Ghost):
     
     def chase(self): # if 8 tiles from Pacman, will SCATTER; else taget as 4 tiles ahead of pacman (like Pinky)
         d = self.pacman.position - self.position
-        ds = d.magnituedSqured()
+        ds = d.magnitudeSquared()
         if ds <= (TILEWIDTH * 8)**2:
             self.scatter()
         else:
@@ -107,7 +107,7 @@ class GhostGroup(object): # loops through generated ghostList and calls/performs
     def __init__(self, node, pacman):
         self.blinky = Blinky(node, pacman)
         self.pinky = Pinky(node, pacman)
-        self.inky = Inky(node, pacman)
+        self.inky = Inky(node, pacman, self.blinky)
         self.clyde = Clyde(node, pacman)
         self.ghosts = [self.blinky, self.pinky, self.inky, self.clyde] # all ghosts objects stored in a list
 
