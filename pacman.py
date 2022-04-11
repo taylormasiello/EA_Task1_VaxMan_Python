@@ -12,6 +12,7 @@ class Pacman(Entity):
         self.name = PACMAN
         self.color = YELLOW
         self.direction = LEFT # when game starts, pacMan will start move LEFT vs standing still until player input
+        self.setBetweenNodes(LEFT) # pacman between nodes is accurate to original game
     
     def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt

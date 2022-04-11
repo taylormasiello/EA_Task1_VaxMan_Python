@@ -83,7 +83,7 @@ class NodeGroup(object):
             return self.nodesLUT[(xpixel, ypixel)]
         return None
     
-    def getNodeFromeTiles(self, col, row):
+    def getNodeFromTiles(self, col, row):
         x, y = self.constructKey(col, row)
         if (x, y) in self.nodesLUT.keys():
             return self.nodesLUT[(x, y)]

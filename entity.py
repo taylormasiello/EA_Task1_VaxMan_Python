@@ -111,5 +111,10 @@ class Entity(object):
             vec = self.node.position + self.directions[direction]*TILEWIDTH - self.goal
             distances.append(vec.magnitudeSquared())
         index = distances.index(min(distances))
-        return directions[index]
+        return directions[index] 
     
+    def setBetweenNodes(self, direction): # takes supplied direction of where "2nd node" should be, finds distnace, sets point midway between nodes
+        if self.node.neighbors[direction] is not None:
+            self.target = self.node.neighbors[direction]
+            self.position = (self.node.position + self.target.position) / 2.0
+
