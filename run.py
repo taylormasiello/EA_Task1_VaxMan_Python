@@ -18,6 +18,7 @@ class GameController(object):
         self.clock = pygame.time.Clock()
         self.fruit = None
         self.pause = Pause(True)
+        self.level = 0
 
     def setBackground(self): # sets up background
         self.background = pygame.surface.Surface(SCREENSIZE).convert()
@@ -86,6 +87,9 @@ class GameController(object):
             self.pellets.pelletList.remove(pellet)
             if pellet.name == POWERPELLET:
                 self.ghosts.startFreight()
+            if self.pellets.isEmpty(): # game pauses for 3 sec after last pellet eaten before calling nextLevel(); hides entities during this time
+                self.hideEntities()
+                self.pause.setPause(pauseTime=3, func=self.nextLevel)
 
     def checkGhostEvents(self): # returns which ghost from ghosts list pacman is colliding with vs bool if colliding; will return None if not colliding
         for ghost in self.ghosts:
@@ -113,6 +117,12 @@ class GameController(object):
     def hideEntities(self): # allows hide all entities (when game paused)
         self.pacman.visible = False
         self.ghosts.hide()
+
+    def nextLevel(self): # increments level, repauses game, starts game over; origial pacMan was same level with slightly altered game mechanics each time
+        self.showEntities()
+        self.level += 1
+        self.pause.paused = True
+        self.startGame()
 
 if __name__ == "__main__":
     game = GameController()
