@@ -54,6 +54,11 @@ class Ghost(Entity):
             self.directionMethod = self.goalDirection
             self.spawn()
 
+    def reset(self): # when pacman dies
+        Entity.reset(self)
+        self.points = 200
+        self.directionMethod = self.goalDirection
+
 class Blinky(Ghost): # defaul SCATTER & CHASE methods
     def __init__(self, node, pacman=None, blinky=None):
         Ghost.__init__(self, node, pacman, blinky)

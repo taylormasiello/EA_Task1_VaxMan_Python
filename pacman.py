@@ -13,13 +13,11 @@ class Pacman(Entity):
         self.color = YELLOW
         self.direction = LEFT # when game starts, pacMan will start move LEFT vs standing still until player input
         self.setBetweenNodes(LEFT) # pacman between nodes is accurate to original game
+        self.alive = True
     
     def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()
-        # self.direction = direction
-        # self.node = self.getNewTarget(direction)
-        # self.setPosition()
         if self.overshotTarget(): # corrects if pacman overshoots node; if target node valid, move in that direction; if not, stop on that node
             self.node = self.target
             if self.node.neighbors[PORTAL] is not None: # check if node is portal, if true pacman will "jump" between
@@ -27,9 +25,6 @@ class Pacman(Entity):
             self.target = self.getNewTarget(direction)
             if self.target is not self.node:
                 self.direction = direction
-            # else:
-            #     self.dirtion = STOP
-            # self.setPosition()
             else:
                 self.target = self.getNewTarget(self.direction)
             if self.target is self.node: 
@@ -54,10 +49,6 @@ class Pacman(Entity):
     def eatPellets(self, pelletList):
         for pellet in pelletList: # loops through pelletList, if pacman collides w/ pellet, returns pellet
             if self.collideCheck(pellet):
-            # d = self.position - pellet.position
-            # dSquared = d.magnitudeSquared()
-            # rSquared = (pellet.radius+self.collideRadius)**2
-            # if dSquared <= rSquared:
                 return pellet
         return None
 
@@ -72,40 +63,12 @@ class Pacman(Entity):
             return True
         return False
 
-    # def validDirection(self, direction): # checks if key pressed is a valid direction, if it has a node in that direction
-    #     if direction is not STOP:
-    #         if self.node.neighbors[direction] is not None:
-    #             return True
-    #         return False
+    def reset(self): # extending reset() from entity
+        Entity.reset(self)
+        self.direction = LEFT
+        self.setBetweenNodes(LEFT)
+        self.alive = True
 
-    # def getNewTarget(self, direction): # moves pacman if key press is valid
-    #     if self.validDirection(direction):
-    #         return self.node.neighbors[direction]
-    #     return self.node
-
-    # def render(self, screen): # pygame needs circle drawn in integers
-    #     p = self.position.asInt()
-    #     pygame.draw.circle(screen, self.color, p, self.radius)
-
-    # def overshotTarget(self): # checks if pacman overshot taget node; if pacmand distance >= distance between nodes, he overshot
-    #     if self.target is not None:
-    #         vec1 = self.target.position - self.node.position
-    #         vec2 = self.position - self.node.position
-    #         node2Target = vec1.magnitudeSquared() # use magnitudeSquared to compare 2 distances to avoid taking square root
-    #         node2Self = vec2.magnitudeSquared()
-    #         return node2Self >= node2Target
-    #     return False
-
-    # def reverseDirection(self): # swaps values to opposite based on constants as flipped values
-    #     self.direction *= -1
-    #     temp = self.node
-    #     self.node = self.target
-    #     self.target = temp
-    
-    # def oppositeDirection(self, direction): # validates checks input direction is opposite of current direction; only these moves available between nodes
-    #     if direction is not STOP:
-    #         if direction == self.direction * -1:
-    #             return True
-    #         return False 
-    
-
+    def die(self):
+        self.alive = False
+        self.direction = STOP

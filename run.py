@@ -19,6 +19,7 @@ class GameController(object):
         self.fruit = None
         self.pause = Pause(True)
         self.level = 0
+        self.lives = 5
 
     def setBackground(self): # sets up background
         self.background = pygame.surface.Surface(SCREENSIZE).convert()
@@ -64,11 +65,12 @@ class GameController(object):
                 exit()
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
-                    self.pause.setPause(playerPaused=True)
-                    if not self.pause.paused:
-                        self.showEntities()
-                    else:
-                        self.hideEntities()
+                    if self.pacman.alive: # prevents pause during pacman death
+                        self.pause.setPause(playerPaused=True)
+                        if not self.pause.paused:
+                            self.showEntities()
+                        else:
+                            self.hideEntities()
 
     def render(self): 
         self.screen.blit(self.background, (0, 0)) # redraws background/erases all objects and redraws them at new positions
@@ -99,6 +101,15 @@ class GameController(object):
                     ghost.visible = False
                     self.pause.setPause(pauseTime=1, func=self.showEntities) # will pause game for 1 sec, showEntities after
                     ghost.startSpawn()
+                elif ghost.mode.current is not SPAWN: # pacman ignores ghost in SPAWN
+                    if self.pacman.alive:
+                        self.lives -= 1
+                        self.pacman.die()
+                        self.ghosts.hide()
+                        if self.lives <= 0:
+                            self.pause.setPause(pauseTime=3, func=self.restartGame)
+                        else:
+                            self.pause.setPause(pauseTime=3, func=self.resetLevel)
 
     def checkFruitEvents(self):
         if self.pellets.numEaten == 50 or self.pellets.numEaten == 140:
@@ -123,6 +134,19 @@ class GameController(object):
         self.level += 1
         self.pause.paused = True
         self.startGame()
+
+    def restartGame(self):
+        self.lives = 5
+        self.level = 0
+        self.pause.paused = True
+        self.fruit = None
+        self.startGame()
+
+    def resetLevel(self):
+        self.pause.paused = True
+        self.pacman.reset() 
+        self.ghosts.reset() # reset() from entity class
+        self.fruit = None
 
 if __name__ == "__main__":
     game = GameController()
