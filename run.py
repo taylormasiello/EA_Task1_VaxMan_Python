@@ -1,3 +1,4 @@
+from re import L
 from turtle import Screen, home
 import pygame
 from pygame.locals import *
@@ -7,6 +8,7 @@ from nodes import NodeGroup
 from pellets import PelletGroup
 from ghosts import *
 from fruit import Fruit
+from pause import Pause
 
 class GameController(object):
     def __init__(self):
@@ -15,6 +17,7 @@ class GameController(object):
         self.background = None
         self.clock = pygame.time.Clock()
         self.fruit = None
+        self.pause = Pause(True)
 
     def setBackground(self): # sets up background
         self.background = pygame.surface.Surface(SCREENSIZE).convert()
@@ -39,21 +42,32 @@ class GameController(object):
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity method names
-        self.pacman.update(dt)
-        self.ghosts.update(dt)
         self.pellets.update(dt)
-        if self.fruit is not None:
-            self.fruit.update(dt)
-        self.checkPelletEvents()
-        self.checkGhostEvents()
-        self.checkFruitEvents()
+        if not self.pause.paused:
+            self.pacman.update(dt)
+            self.ghosts.update(dt)
+            if self.fruit is not None:
+                self.fruit.update(dt)
+            self.checkPelletEvents()
+            self.checkGhostEvents()
+            self.checkFruitEvents()
+        afterPauseMethod = self.pause.update(dt)
+        if afterPauseMethod is not None:
+            afterPauseMethod()
         self.checkEvents()
         self.render()
 
     def checkEvents(self): 
         for event in pygame.event.get():
             if event.type == QUIT:
-                exit()                
+                exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    self.pause.setPause(playerPaused=True)
+                    if not self.pause.paused:
+                        self.showEntities()
+                    else:
+                        self.hideEntities()
 
     def render(self): 
         self.screen.blit(self.background, (0, 0)) # redraws background/erases all objects and redraws them at new positions
@@ -77,6 +91,9 @@ class GameController(object):
         for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
                 if ghost.mode.current is FREIGHT:
+                    self.pacman.visible = False
+                    ghost.visible = False
+                    self.pause.setPause(pauseTime=1, func=self.showEntities) # will pause game for 1 sec, showEntities after
                     ghost.startSpawn()
 
     def checkFruitEvents(self):
@@ -88,6 +105,14 @@ class GameController(object):
                 self.fruit = None
             elif self.fruit.destroy: # if fruit timer runs out and is destoryed
                 self.fruit = None
+
+    def showEntities(self):
+        self.pacman.visible = True
+        self.ghosts.show()
+
+    def hideEntities(self): # allows hide all entities (when game paused)
+        self.pacman.visible = False
+        self.ghosts.hide()
 
 if __name__ == "__main__":
     game = GameController()
