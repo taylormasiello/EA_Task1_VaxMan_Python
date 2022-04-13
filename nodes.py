@@ -1,3 +1,4 @@
+from sre_constants import IN
 import pygame
 import numpy as np # type: ignore ; supressiong of incorrect warning
 from vector import Vector2
@@ -8,6 +9,18 @@ class Node(object):
     def __init__(self, x, y):
         self.position = Vector2(x, y)
         self.neighbors = {UP:None, DOWN:None, LEFT:None, RIGHT:None, PORTAL: None} # node neighbors set up as dictionary
+        self.access = {UP: [PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT], # dictionary
+                    DOWN: [PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT], # keys - 4 directions entities can go
+                    LEFT: [PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT], # values - entities that have access to travel in that direction
+                    RIGHT: [PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT]}
+
+    def denyAccess(self, direction, entity):
+        if entity.name in self.access[direction]:
+            self.access[direction].remove(entity.name)
+    
+    def allowAccess(self, direction, entity):
+        if entity.name not in self.access[direction]:
+            self.access[direction].append(entity.name)
 
     def render(self, screen):
         for n in self.neighbors.keys():
@@ -30,7 +43,6 @@ class NodeGroup(object):
         self.homekey = None
 
     def render(self, screen): # loops through nodeList and calls nodes render method
-        # for node in self.nodeList:
         for node in self.nodesLUT.values():
             node.render(screen)
 
@@ -118,31 +130,35 @@ class NodeGroup(object):
         nodes = list(self.nodesLUT.values())
         return nodes[0]
 
-    # def __init__(self):
-    #    self.nodeList = [] # init empty list of of nodes
+    # restrict/allow access 
+    def denyAccess(self, col, row, direction, entity):
+        node = self.getNodeFromTiles(col, row)
+        if node is not None:
+            node.denyAccess(direction, entity)
 
-    # def setupTestNodes(self): # manually populating node list
-    #     nodeA = Node(80, 80) # node locations
-    #     nodeB = Node(160, 80)
-    #     nodeC = Node(80, 160)
-    #     nodeD = Node(160, 160)
-    #     nodeE = Node(208, 160)
-    #     nodeF = Node(80, 320)
-    #     nodeG = Node(208, 320)
-    #     nodeA.neighbors[RIGHT] = nodeB # linking nodes by adding nodes to neighbors dictionary of each node
-    #     nodeA.neighbors[DOWN] = nodeC
-    #     nodeB.neighbors[LEFT] = nodeA
-    #     nodeB.neighbors[DOWN] = nodeD
-    #     nodeC.neighbors[UP] = nodeA
-    #     nodeC.neighbors[RIGHT] = nodeD
-    #     nodeC.neighbors[DOWN] = nodeF
-    #     nodeD.neighbors[UP] = nodeB
-    #     nodeD.neighbors[LEFT] = nodeC
-    #     nodeD.neighbors[RIGHT] = nodeE
-    #     nodeE.neighbors[LEFT] = nodeD
-    #     nodeE.neighbors[DOWN] = nodeG
-    #     nodeF.neighbors[UP] = nodeC
-    #     nodeF.neighbors[RIGHT] = nodeG
-    #     nodeG.neighbors[UP] = nodeE
-    #     nodeG.neighbors[LEFT] = nodeF
-    #     self.nodeList = [nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG] # add all nodes to nodeList
+    def allowAccess(self, col, row, direction, entity):
+        node = self.getNodeFromTiles(col, row)
+        if node is not None:
+            node.allowAccess(direction, entity)
+
+    def denyAccessList(self, col, row, direction, entities):
+        for entity in entities:
+            self.denyAccess(col, row, direction, entity)
+    
+    def allowAccessList(self, col, row, direction, entities):
+        for entity in entities:
+            self.denyAccess(col, row, direction, entity)
+
+    def denyHomeAccess(self, entity):
+        self.nodesLUT[self.homekey].denyAccess(DOWN, entity)
+
+    def allowHomeAccess(self, entity):
+        self.nodesLUT[self.homekey].allowAccess(DOWN, entity)
+
+    def denyHomeAccessList(self, entities):
+        for entity in entities:
+            self.denyHomeAccess(entity)
+    
+    def allowHomeAccessList(self, entities):
+        for entity in entities:
+            self.allowHomeAccess(entity)

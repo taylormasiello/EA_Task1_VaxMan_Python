@@ -15,9 +15,6 @@ class Entity(object):
         self.radius = 10
         self.collideRadius = 5
         self.color = WHITE
-        # self.node = node
-        # self.setPosition()
-        # self.target = node
         self.visible = True
         self.disablePortal = False
         self.goal = None
@@ -29,8 +26,9 @@ class Entity(object):
           
     def validDirection(self, direction):
         if direction is not STOP:
-            if self.node.neighbors[direction] is not None:
-                return True
+            if self.name in self.node.access[direction]: 
+                if self.node.neighbors[direction] is not None:
+                    return True
         return False
 
     def getNewTarget(self, direction):
@@ -78,8 +76,7 @@ class Entity(object):
          
         if self.overshotTarget():
             self.node = self.target
-            directions = self.validDirections()
-            # direction = self.randomDirection(directions)   
+            directions = self.validDirections()   
             direction = self.directionMethod(directions)
             if not self.disablePortal:
                 if self.node.neighbors[PORTAL] is not None:
