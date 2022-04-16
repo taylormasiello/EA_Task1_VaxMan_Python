@@ -9,6 +9,7 @@ from pellets import PelletGroup
 from ghosts import *
 from fruit import Fruit
 from pause import Pause
+from text import TextGroup
 
 class GameController(object):
     def __init__(self):
@@ -20,6 +21,8 @@ class GameController(object):
         self.pause = Pause(True)
         self.level = 0
         self.lives = 5
+        self.score = 0
+        self.textgroup = TextGroup()
 
     def setBackground(self): # sets up background
         self.background = pygame.surface.Surface(SCREENSIZE).convert()
@@ -53,6 +56,7 @@ class GameController(object):
 
     def update(self): # called once per frame, game loop
         dt = self.clock.tick(30) / 1000.0 # changes method from Update() to FixedUpdate(), Unity method names
+        self.textgroup.update(dt)
         self.pellets.update(dt)
         if not self.pause.paused:
             self.pacman.update(dt)
@@ -68,6 +72,21 @@ class GameController(object):
         self.checkEvents()
         self.render()
 
+    def render(self): 
+        self.screen.blit(self.background, (0, 0)) # redraws background/erases all objects and redraws them at new positions
+        self.nodes.render(self.screen) # placing before pacman so pellets appear in front of nodes when rendered
+        self.pellets.render(self.screen) # drawn before pacman so pacman in front of pellets
+        if self.fruit is not None:
+            self.fruit.render(self.screen)
+        self.pacman.render(self.screen)
+        self.ghosts.render(self.screen)
+        self.textgroup.render(self.screen)
+        pygame.display.update()
+
+    def updateScore(self, points):
+        self.score += points
+        self.textgroup.updateScore(self.score)
+
     def checkEvents(self): 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -77,24 +96,17 @@ class GameController(object):
                     if self.pacman.alive: # prevents pause during pacman death
                         self.pause.setPause(playerPaused=True)
                         if not self.pause.paused:
+                            self.textgroup.hideText()
                             self.showEntities()
                         else:
-                            self.hideEntities()
-
-    def render(self): 
-        self.screen.blit(self.background, (0, 0)) # redraws background/erases all objects and redraws them at new positions
-        self.nodes.render(self.screen) # placing before pacman so pellets appear in front of nodes when rendered
-        self.pellets.render(self.screen) # drawn before pacman so pacman in front of pellets
-        if self.fruit is not None:
-            self.fruit.render(self.screen)
-        self.pacman.render(self.screen)
-        self.ghosts.render(self.screen)
-        pygame.display.update() 
+                            self.textgroup.showText(PAUSETXT)
+                            self.hideEntities() 
 
     def checkPelletEvents(self):
         pellet = self.pacman.eatPellets(self.pellets.pelletList) # sends pelletList to pacman; returns pellet he's colliding with, if any
         if pellet: # if pellet not None
             self.pellets.numEaten += 1
+            self.updateScore(pellet.points)
             if self.pellets.numEaten == 30:
                 self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
             if self.pellets.numEaten == 70:
@@ -112,6 +124,9 @@ class GameController(object):
                 if ghost.mode.current is FREIGHT:
                     self.pacman.visible = False
                     ghost.visible = False
+                    self.updateScore(ghost.points)
+                    self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1)
+                    self.ghosts.updatePoints()
                     self.pause.setPause(pauseTime=1, func=self.showEntities) # will pause game for 1 sec, showEntities after
                     ghost.startSpawn()
                     self.nodes.allowHomeAccess(ghost) # ghosts allowed in home during SPAWN
@@ -121,6 +136,7 @@ class GameController(object):
                         self.pacman.die()
                         self.ghosts.hide()
                         if self.lives <= 0:
+                            self.textgroup.showText(GAMEOVERTEXT)
                             self.pause.setPause(pauseTime=3, func=self.restartGame)
                         else:
                             self.pause.setPause(pauseTime=3, func=self.resetLevel)
@@ -131,6 +147,8 @@ class GameController(object):
                 self.fruit = Fruit(self.nodes.getNodeFromTiles(9, 20)) # starting node sent to Fruit class as param
         if self.fruit is not None:
             if self.pacman.collideCheck(self.fruit): # if fruit exists and has been eaten by pacman
+                self.updateScore(self.fruit.points)
+                self.textgroup.addText(str(self.fruit.points), WHITE, self.fruit.position.x, self.fruit.position.y, 8, time=1)
                 self.fruit = None
             elif self.fruit.destroy: # if fruit timer runs out and is destoryed
                 self.fruit = None
@@ -148,6 +166,7 @@ class GameController(object):
         self.level += 1
         self.pause.paused = True
         self.startGame()
+        self.textgroup.updateLevel(self.level)
 
     def restartGame(self):
         self.lives = 5
@@ -155,12 +174,17 @@ class GameController(object):
         self.pause.paused = True
         self.fruit = None
         self.startGame()
+        self.score = 0
+        self.textgroup.updateScore(self.score)
+        self.textgroup.updateLevel(self.level)
+        self.textgroup.showText(READYTXT)
 
     def resetLevel(self):
         self.pause.paused = True
         self.pacman.reset() 
         self.ghosts.reset() # reset() from entity class
         self.fruit = None
+        self.textgroup.showText(READYTXT)
 
 if __name__ == "__main__":
     game = GameController()
