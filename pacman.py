@@ -18,6 +18,7 @@ class Pacman(Entity):
         self.sprites = PacmanSprites(self)
     
     def update(self, dt):
+        self.sprites.update(dt)
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()
         if self.overshotTarget(): # corrects if pacman overshoots node; if target node valid, move in that direction; if not, stop on that node
