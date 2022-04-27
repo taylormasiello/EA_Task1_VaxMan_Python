@@ -5,6 +5,7 @@ from vector import Vector2
 from constants import *
 from nodes import *
 from entity import Entity
+from sprites import PacmanSprites
 
 class Pacman(Entity):
     def __init__(self, node):
@@ -14,6 +15,7 @@ class Pacman(Entity):
         self.direction = LEFT # when game starts, pacMan will start move LEFT vs standing still until player input
         self.setBetweenNodes(LEFT) # pacman between nodes is accurate to original game
         self.alive = True
+        self.sprites = PacmanSprites(self)
     
     def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt

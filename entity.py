@@ -20,6 +20,7 @@ class Entity(object):
         self.goal = None
         self.directionMethod = self.randomDirection
         self.setStartNode(node)
+        self.image = None
     
     def setPosition(self):
         self.position = self.node.position.copy()
@@ -62,8 +63,11 @@ class Entity(object):
 
     def render(self, screen):
         if self.visible:
-            p = self.position.asInt()
-            pygame.draw.circle(screen, self.color, p, self.radius)
+            if self.image is not None:
+                screen.blit(self.image, self.position.asTuple()) # draws image for entity if not None; draws pygame circle otherwise
+            else:
+                p = self.position.asInt()
+                pygame.draw.circle(screen, self.color, p, self.radius)
 
     def setStartNode(self, node): # to setStartNode, need to set startNode to node and target, then call setPosition()
         self.node = node

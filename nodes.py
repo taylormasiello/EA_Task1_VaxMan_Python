@@ -1,6 +1,6 @@
 from sre_constants import IN
 import pygame
-import numpy as np # type: ignore ; supressiong of incorrect warning
+import numpy as np # type: ignore ; supression of incorrect warning
 from vector import Vector2
 from constants import *
 
