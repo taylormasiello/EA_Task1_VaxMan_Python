@@ -69,7 +69,7 @@ class LifeSprites(Spritesheet):
     def resetLives(self, numlives):
         self.images = []
         for i in range(numlives):
-            self.images.appened(self.getImage(0,0))
+            self.images.append(self.getImage(0,0))
 
     def getImage(self, x, y):
         return Spritesheet.getImage(self, x, y, 2*TILEWIDTH, 2*TILEHEIGHT)
