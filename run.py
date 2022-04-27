@@ -1,5 +1,3 @@
-from re import L
-from turtle import Screen, home
 import pygame
 from pygame.locals import *
 from constants import *
@@ -10,7 +8,7 @@ from ghosts import *
 from fruit import Fruit
 from pause import Pause
 from text import TextGroup
-from sprites  import LifeSprites
+from sprites  import *
 
 class GameController(object):
     def __init__(self):
@@ -32,6 +30,8 @@ class GameController(object):
 
     def startGame(self):
         self.setBackground()
+        self.mazesprites = MazeSprites("maze1.txt", "maze1_rotation.txt")
+        self.background = self.mazesprites.constructBackground(self.background, self.level%5)
         self.nodes = NodeGroup("maze1.txt")
         self.nodes.setPortalPair((0, 17), (27, 17)) # temp hard coded portal neighbors
         homekey = self.nodes.createHomeNodes(11.5, 14) # temp hard coded based on maze1 txtFile
@@ -76,7 +76,6 @@ class GameController(object):
 
     def render(self): 
         self.screen.blit(self.background, (0, 0)) # redraws background/erases all objects and redraws them at new positions
-        self.nodes.render(self.screen) # placing before pacman so pellets appear in front of nodes when rendered
         self.pellets.render(self.screen) # drawn before pacman so pacman in front of pellets
         if self.fruit is not None:
             self.fruit.render(self.screen)
