@@ -21,7 +21,7 @@ class Animator(object):
                 self.current_frame = 0
             else:
                 self.finished = True
-                self.current_frame -= 1
+                self.current_frame -= 1 # makes current_frame == last index value of animation array (accounts for zero index)
         
         return self.frames[self.current_frame]
 
