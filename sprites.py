@@ -76,6 +76,17 @@ class GhostSprites(Spritesheet):
     def getImage(self, x, y):
         return Spritesheet.getImage(self, x, y, 2*TILEWIDTH, 2*TILEHEIGHT)
 
+    def update(self, dt):
+        x = self.x[self.entity.name]
+        if self.entity.direction == LEFT:
+            self.entity.image = self.getImage(x, 8)
+        elif self.entity.direction == RIGHT:
+            self.entity.image = self.getImage(x, 10)
+        elif self.entity.direction == DOWN:
+            self.entity.image = self.getImage(x, 6)
+        elif self.entity.direction == UP:
+            self.entity.image = self.getImage(x, 4)
+
 class FruitSprites(Spritesheet):
     def __init__(self, entity):
         Spritesheet.__init__(self)
